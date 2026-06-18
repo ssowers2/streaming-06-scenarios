@@ -253,3 +253,26 @@ If you see something like this in your terminal: `>>>` or `...`
 You accidentally started Python interactive mode.
 It happens.
 Press `Ctrl+c` (both keys together) or `Ctrl+Z` then `Enter` on Windows.
+
+## Technical Modification
+
+I modified the Kafka consumer by adding a new derived field named `sowers_sales_level`.
+
+The consumer classifies each sale based on the total transaction amount.
+Sales with a total value greater than or equal to 100 are labeled **High**,
+and all other sales are labeled **Standard**.
+
+```python
+enriched["sowers_sales_level"] = "High" if enriched["total"] >= 100 else "Standard"
+```
+
+I also updated `CONSUMED_FIELDNAMES` so the new field is included in the output CSV.
+
+### Results
+
+After running the producer and consumer, the output file successfully included
+the new `sowers_sales_level` column. Records with totals of 100 or more were
+categorized as **High**, while the remaining records were categorized as **Standard**.
+
+This modification demonstrates how streaming data can be enriched with additional
+business information before being stored and analyzed.

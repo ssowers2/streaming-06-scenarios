@@ -137,6 +137,7 @@ CONSUMED_FIELDNAMES: Final[list[str]] = [
     "_kafka_key",
     "_kafka_partition",
     "_kafka_offset",
+    "sowers_sales_level",
 ]
 
 REJECTED_SALES_FIELDNAMES: Final[list[str]] = [
