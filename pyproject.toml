@@ -24,6 +24,7 @@ dependencies = [
     "duckdb", # WHY: In-memory database for testing and prototyping.
     "matplotlib", # WHY: Static plotting library for quick visualizations.
     "python-dotenv", # WHY: Load environment variables from .env files for configuration.
+    "pandas>=3.0.3",
 ]
 
 [project.optional-dependencies]
@@ -166,6 +167,11 @@ convention = "google"   # ALT: "numpy" - choose one, never mix.
 [build-system]
 build-backend = "hatchling.build"
 requires = ["hatchling"]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.3.0",
+]
 
 [tool.hatch.build.targets.wheel]
 # CUSTOM: Must match src/ folders.
