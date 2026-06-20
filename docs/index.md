@@ -48,9 +48,7 @@ The consumer writes processed records to:
 data/output/consumed_sales_sowers.csv
 ```
 
-It also stores records in DuckDB. For Phase 5, I created a
-Jupyter notebook that generates a chart showing total revenue by
-region.
+and stores processed data in DuckDB.
 
 My custom field labels sales with totals greater than or equal to
 100 as `High`. All other sales are labeled `Standard`.
@@ -60,12 +58,26 @@ My custom field labels sales with totals greater than or equal to
 For my Phase 4 modification, I added a new derived field called
 `sowers_sales_level`.
 
-Sales with totals greater than or equal to 100 are classified as
-`High`. Remaining sales are classified as `Standard`.
+Transactions with totals greater than or equal to 100 are classified
+as `High`. Remaining sales are classified as `Standard`.
+
+```python
+enriched["sowers_sales_level"] = (
+    "High" if enriched["total"] >= 100 else "Standard"
+)
+```
 
 For Phase 5, I created a Jupyter notebook to analyze the consumed
 sales data. I used pandas and matplotlib to summarize the output and
 visualize total revenue by region.
+
+The notebook loads:
+
+```text
+data/output/consumed_sales_sowers.csv
+```
+
+and generates visualizations to summarize the results.
 
 ### Results
 
@@ -73,14 +85,13 @@ The producer and consumer executed successfully.
 
 The output CSV included the new `sowers_sales_level` column.
 
-I also created a notebook that analyzed the consumed data and
-generated a chart showing total revenue by region.
-
-The chart showed that the US-TX region produced the highest revenue
-in the sample dataset, generating significantly more revenue than the
-other regions.
+The notebook revealed that the US-TX region produced the highest
+revenue in the sample dataset, generating significantly more revenue
+than the other regions.
 
 ![Total Revenue by Region](images/total_revenue_by_region.png)
+
+*Figure 1. Total revenue by region based on consumed sales data.*
 
 ### Interpretation
 
@@ -99,56 +110,3 @@ into business intelligence. The regional revenue analysis made it
 easy to identify which regions generated the highest sales and
 demonstrated how consumed messages can support business
 decision-making.
-
-## Phase 5: Apply the Example
-
-For Phase 5, I extended the original streaming example to create
-my own application.
-
-### Custom Consumer Enhancement
-
-I modified the Kafka consumer to add a new derived field named
-`sowers_sales_level`.
-
-Transactions with totals greater than or equal to 100 are labeled
-`High`, while all other transactions are labeled `Standard`.
-
-```python
-enriched["sowers_sales_level"] = (
-    "High" if enriched["total"] >= 100 else "Standard"
-)
-```
-
-I also updated the output field list so the new column was written
-to the consumed sales CSV file.
-
-### Notebook Analysis
-
-I created a Jupyter notebook to analyze the consumed sales data
-using pandas and matplotlib.
-
-The notebook loads the processed data from:
-
-```text
-data/output/consumed_sales_sowers.csv
-```
-
-and generates visualizations to summarize the results.
-
-### Business Insight
-
-The notebook revealed that the US-TX region generated the highest
-total revenue in the sample dataset.
-
-This project demonstrated how streaming data can be enriched with
-additional business information and transformed into useful business
-intelligence through analysis and visualization.
-
-## Visualization
-
-The chart below summarizes total revenue by region using the
-consumed Kafka sales data.
-
-![Total Revenue by Region](data/output/sales_chart_sowers.png)
-
-*Figure 1. Total revenue by region based on consumed sales data.*

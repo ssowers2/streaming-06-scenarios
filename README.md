@@ -1,57 +1,44 @@
 # streaming-06-scenarios
 
-[![API Reference](https://img.shields.io/badge/API--Utils-datafun--streaming-purple)](https://denisecase.github.io/datafun-streaming/api/)
-[![Workflow Guide](https://img.shields.io/badge/Pro--Guide-pro--analytics--02-green)](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/)
-[![Python 3.14](https://img.shields.io/badge/python-3.14%2B-blue?logo=python)](./pyproject.toml)
-[![MIT](https://img.shields.io/badge/license-see%20LICENSE-yellow.svg)](./LICENSE)
-
 > Streaming data analytics: complete pipeline.
 
-Streaming analytics requires working with data in motion
-and distributed, scalable systems.
-This course builds capabilities through working projects.
-In the age of generative AI, durable skills are grounded in real work:
-setting up a professional environment,
-reading and running code,
-understanding the logic,
-and pushing work to a shared repository.
-Each project follows the structure of professional Python projects.
-We learn by doing.
+This project demonstrates a complete Kafka streaming workflow.
 
-## This Project
+Sales records are produced to a Kafka topic, consumed and validated,
+enriched with derived fields, stored in DuckDB, and analyzed using a
+Jupyter notebook.
 
-This project brings the full streaming analytics workflow together.
+## Custom Project Overview
 
-The project uses Kafka to move sales messages from a producer to a consumer.
-The producer sends validated sales messages to a Kafka topic.
-The consumer reads each message, validates required fields, computes derived values,
-updates a live chart, writes processed records to CSV, and stores results in DuckDB.
+This project extends the streaming analytics example by adding a
+custom derived field named `sowers_sales_level`.
 
-This module combines the major skills from the course:
+The producer streams sales transactions to the Kafka topic:
 
-- producing messages
-- consuming messages
-- validating message structure
-- computing derived fields
-- visualizing the stream
-- storing processed data
+```text
+streaming-06-scenarios-sowers
+```
 
-The goal is to see how the parts work together in one complete scenario.
+The consumer validates messages, computes derived values, writes
+records to CSV, stores data in DuckDB, and classifies transactions as
+either `High` or `Standard`. I created a Jupyter notebook to analyze
+the consumed data and visualize total revenue by region.
 
 ## Working Files
 
-You'll work with just these areas:
+You'll work primarily with:
 
-- **data/** - input data and generated output files
-- **docs/** - the project narrative and documentation
-- **src/streaming/** - producer, consumer, and supporting code
-- **pyproject.toml** - update authorship & links
-- **zensical.toml** - update authorship & links
+- **data/** - input and output files
+- **docs/** - project documentation
+- **Notebook/** - Jupyter notebook analysis
+- **src/streaming/** - producer, consumer, and support modules
+- **pyproject.toml**
+- **zensical.toml**
 
 ## Instructions
 
 Follow the
-[step-by-step workflow guide](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/)
+[⭐ **Workflow: Apply Example**](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/)
 to complete:
 
 1. Phase 1. **Start & Run**
@@ -60,76 +47,41 @@ to complete:
 4. Phase 4. **Modify**
 5. Phase 5. **Apply**
 
-## Challenges
-
-Challenges are expected.
-Sometimes instructions may not quite match your operating system.
-When issues occur, share screenshots, error messages, and details about what you tried.
-Working through issues is part of implementing professional projects.
-
 ## Success
-
-After completing Phase 1. **Start & Run**, you'll have your own GitHub project
-running with Kafka.
 
 Use four named terminals:
 
-1. **kafka** - keep the Kafka message broker running
-2. **topics** - create, list, or reset Kafka topics
-3. **producer** - run the project and producer
-4. **consumer** - run the consumer
+1. **kafka**
+2. **topics**
+3. **producer**
+4. **consumer**
 
 After the producer and consumer run successfully, you should see:
 
-```shell
+```text
 ========================
 Consumer executed successfully!
 ========================
 ```
 
-A new file `project.log` will appear in the root project folder
-and processed data will appear in data/output/.
+A new `project.log` file will appear in the root project folder and
+processed data will appear in `data/output/`.
 
 ## Command Reference
 
-The commands below are used in the workflow guide above.
-They are provided here for convenience.
+### Terminal 1: Start Kafka (`kafka`)
 
-**Important:** the first few times you run a project,
-follow the guide with the **complete instructions**.
+Open a new VS Code terminal and rename it `kafka`.
 
-<details>
-<summary>Show command reference</summary>
-
-### In a machine terminal (open in your `Repos` folder)
-
-After you get a copy of this repo in your own GitHub account,
-open a machine terminal in your `Repos` folder:
+If running Windows, specify the terminal type as **wsl** or type:
 
 ```bash
-# Replace username with YOUR GitHub username.
-git clone https://github.com/ssowers2/streaming-06-scenarios
-
-cd streaming-06-scenarios
-code .
+wsl
 ```
 
-### In VS Code Terminal 1: Start Kafka (kafka)
-
-For full instructions see
-[**start kafka**](https://denisecase.github.io/pro-analytics-02/kafka/start-kafka/).
-
-If any command fails,
-repeat the steps at
-[**install kafka**](https://denisecase.github.io/pro-analytics-02/kafka/install-kafka/)
-until starting up is reliable.
-
-Open a new VS Code terminal. Rename it `kafka`.
-If running Windows, specify the terminal type as **wsl** or
-type `wsl`.
 Run the commands one at a time.
 
-Step 1. Verify Java and PATH
+#### Step 1. Verify Java and PATH
 
 ```bash
 echo "$JAVA_HOME"
@@ -137,7 +89,7 @@ echo "$JAVA_HOME"
 "$JAVA_HOME/bin/java" --version
 ```
 
-Step 2. Rebuild ClusterID (as needed)
+#### Step 2. Rebuild Cluster ID (as needed)
 
 ```bash
 cd ~/kafka
@@ -148,10 +100,13 @@ KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
 
 echo "Cluster ID: $KAFKA_CLUSTER_ID"
 
-bin/kafka-storage.sh format --standalone -t "$KAFKA_CLUSTER_ID" -c config/server.properties
+bin/kafka-storage.sh format \
+  --standalone \
+  -t "$KAFKA_CLUSTER_ID" \
+  -c config/server.properties
 ```
 
-Step 3. Start kafka server (keep running)
+#### Step 3. Start Kafka Server
 
 ```bash
 cd ~/kafka
@@ -159,18 +114,19 @@ cd ~/kafka
 bin/kafka-server-start.sh config/server.properties
 ```
 
-### In VS Code terminal 2: Create Topic (topics)
+Keep this terminal running.
 
-For full instructions see
-[**create topic**](https://denisecase.github.io/pro-analytics-02/kafka/create-topic/).
+### Terminal 2: Create Topic (`topics`)
 
-The topic name must match the name defined in your
-`.env` file (copy `.env.example` to `.env`).
+Open another VS Code terminal and rename it `topics`.
 
-Open another VS Code terminal. Rename it `topics`.
-If running Windows, specify the terminal type as **wsl** or
-type `wsl`.
-Run the commands one at a time.
+If running Windows, specify the terminal type as **wsl** or type:
+
+```bash
+wsl
+```
+
+Run:
 
 ```bash
 cd ~/kafka
@@ -182,98 +138,58 @@ bin/kafka-topics.sh --create \
   --topic streaming-06-scenarios-sowers
 ```
 
-### In VS Code Terminal 3: Run Project and Producer (producer)
+### Terminal 3: Run the Producer (`producer`)
 
-Open another VS Code terminal. Rename it `producer`.
+Open another VS Code terminal and rename it `producer`.
+
 If running Windows, use **PowerShell**.
-Run the commands one at a time.
+
+Run:
 
 ```shell
-# reset uv cache only if/when you start getting strange dependency errors
-# uv cache clean
+uv sync --extra dev --extra docs
 
-uv self update
-uv python pin 3.14
-uv sync --extra dev --extra docs --upgrade
-
-uvx pre-commit install
-
-git add -A
-uvx pre-commit run --all-files
-# repeat if changes were made
-git add -A
-uvx pre-commit run --all-files
-
-# run the producer
-clear
-uv run python -m streaming.kafka_producer_case
-
-# do chores
-uv run ruff format .
-uv run ruff check . --fix
-uv run python -m pyright
-uv run python -m pytest
-uv run python -m zensical build
-
-# save progress
-git add -A
-git commit -m "update"
-git push -u origin main
+uv run python -m streaming.kafka_producer_sowers
 ```
 
-### In VS Code Terminal 4: Run Consumer (consumer)
+### Terminal 4: Run the Consumer (`consumer`)
 
-Open another VS Code terminal. Rename it `consumer`.
+Open another VS Code terminal and rename it `consumer`.
+
 If running Windows, use **PowerShell**.
-Run the commands one at a time.
-Clear the terminal, then start the consumer.
+
+Run:
 
 ```shell
-clear
-uv run python -m streaming.kafka_consumer_case
+uv run python -m streaming.kafka_consumer_sowers
 ```
 
-To start fresh, see
-[manage topics](https://denisecase.github.io/pro-analytics-02/kafka/manage-topics/)
-to delete the topic and recreate it.
+## Troubleshooting
 
-</details>
+If Kafka fails to start, rebuild the cluster ID using the course
+instructions.
 
-## Notes
+If you accidentally enter Python interactive mode and see:
 
-- Use the **UP ARROW** and **DOWN ARROW** in the terminal to scroll through past commands.
-- Use `CTRL+f` to find (and replace) text within a file.
-- You do not need to add to or modify `tests/`. They are provided for example only.
-- Many files are silent helpers. Explore as you like, but nothing is required.
-- You do NOT not to understand everything; understanding builds naturally over time.
+```text
+>>>
+```
 
-## Troubleshooting >>> or
+or
 
-cd ~/kafka
+```text
+...
+```
 
-rm -rf /tmp/kraft-combined-logs
+press `Ctrl+C` (or `Ctrl+Z` then Enter on Windows).
 
-KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+## Make a Technical Modification
 
-echo "Cluster ID: $KAFKA_CLUSTER_ID"
-
-bin/kafka-storage.sh format --standalone \
-  -t "$KAFKA_CLUSTER_ID" \
-  -c config/kraft/server.properties
-
-bin/kafka-server-start.sh config/kraft/server.properties
-
-If you see something like this in your terminal: `>>>` or `...`
-You accidentally started Python interactive mode.
-It happens.
-Press `Ctrl+c` (both keys together) or `Ctrl+Z` then `Enter` on Windows.
-
-## Technical Modification
-
-For my Phase 4 technical modification, I enhanced the Kafka consumer
+For my technical modification, I enhanced the Kafka consumer
 by adding a new derived field named `sowers_sales_level`.
 
 The consumer classifies transactions based on the total sale amount.
+
 Sales with totals greater than or equal to 100 are labeled `High`,
 while all remaining sales are labeled `Standard`.
 
@@ -283,8 +199,8 @@ enriched["sowers_sales_level"] = (
 )
 ```
 
-I also updated the list of consumed output fields so the new column
-would be written to:
+I also updated the output field list so the new column would be
+written to:
 
 ```text
 data/output/consumed_sales_sowers.csv
@@ -293,62 +209,56 @@ data/output/consumed_sales_sowers.csv
 ### Results
 
 After running the producer and consumer, the output file successfully
-included the new `sowers_sales_level` column. Transactions with
-totals greater than or equal to 100 were categorized as `High`,
-while all other transactions were categorized as `Standard`.
+included the new `sowers_sales_level` column.
 
-This modification demonstrates how streaming data can be enriched
-with additional business information before being stored and analyzed.
+Transactions with totals greater than or equal to 100 were categorized
+as `High`, while all other transactions were categorized as
+`Standard`.
 
-## Phase 5: Apply the Example
+This modification demonstrates how streaming data can be enriched with
+additional business information before being stored and analyzed.
 
-For Phase 5, I extended the original streaming example to create
-my own application.
+## Apply the Skills to a New Problem
 
-### Custom Consumer Enhancement
-
-I modified the Kafka consumer to add a new derived field named
-`sowers_sales_level`.
-
-Transactions with totals greater than or equal to 100 are labeled
-`High`, while all other transactions are labeled `Standard`.
-
-```python
-enriched["sowers_sales_level"] = (
-    "High" if enriched["total"] >= 100 else "Standard"
-)
-```
-
-I also updated the output field list so the new column was written
-to the consumed sales CSV file.
+I applied the streaming analytics workflow to a new problem by creating a
+Jupyter notebook that transforms the consumed sales data into business insights.
+Using pandas and matplotlib, I summarized and visualized total revenue by region.
+This additional analysis extended the original streaming example beyond message
+production and consumption and demonstrated how streaming data can support
+decision-making.
 
 ### Notebook Analysis
 
-I created a Jupyter notebook to analyze the consumed sales data
-using pandas and matplotlib.
-
-The notebook loads the processed data from:
+I used pandas and matplotlib to summarize the data stored in:
 
 ```text
 data/output/consumed_sales_sowers.csv
 ```
 
-and generates visualizations to summarize the results.
+The notebook generates visualizations that compare revenue across
+regions.
 
 ### Business Insight
 
 The notebook revealed that the US-TX region generated the highest
 total revenue in the sample dataset.
 
-This project demonstrated how streaming data can be enriched with
-additional business information and transformed into useful business
-intelligence through analysis and visualization.
+This project demonstrated how streaming data can be transformed into
+useful business intelligence through analysis and visualization.
 
 ## Visualization
 
-The chart below summarizes total revenue by region using the
-consumed Kafka sales data.
+The chart below summarizes total revenue by region using the consumed
+Kafka sales data.
 
 ![Total Revenue by Region](data/output/sales_chart_sowers.png)
 
 *Figure 1. Total revenue by region based on consumed sales data.*
+
+- Explore the notebook:
+
+```text
+Notebook/sowers_sales_analysis.ipynb
+```
+
+for additional analysis and insights.
