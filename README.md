@@ -276,3 +276,17 @@ categorized as **High**, while the remaining records were categorized as **Stand
 
 This modification demonstrates how streaming data can be enriched with additional
 business information before being stored and analyzed.
+
+cd ~/kafka
+
+rm -rf /tmp/kraft-combined-logs
+
+KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+
+echo "Cluster ID: $KAFKA_CLUSTER_ID"
+
+bin/kafka-storage.sh format --standalone \
+  -t "$KAFKA_CLUSTER_ID" \
+  -c config/kraft/server.properties
+
+bin/kafka-server-start.sh config/kraft/server.properties
