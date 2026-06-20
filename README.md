@@ -249,34 +249,6 @@ to delete the topic and recreate it.
 
 ## Troubleshooting >>> or
 
-If you see something like this in your terminal: `>>>` or `...`
-You accidentally started Python interactive mode.
-It happens.
-Press `Ctrl+c` (both keys together) or `Ctrl+Z` then `Enter` on Windows.
-
-## Technical Modification
-
-I modified the Kafka consumer by adding a new derived field named `sowers_sales_level`.
-
-The consumer classifies each sale based on the total transaction amount.
-Sales with a total value greater than or equal to 100 are labeled **High**,
-and all other sales are labeled **Standard**.
-
-```python
-enriched["sowers_sales_level"] = "High" if enriched["total"] >= 100 else "Standard"
-```
-
-I also updated `CONSUMED_FIELDNAMES` so the new field is included in the output CSV.
-
-### Results
-
-After running the producer and consumer, the output file successfully included
-the new `sowers_sales_level` column. Records with totals of 100 or more were
-categorized as **High**, while the remaining records were categorized as **Standard**.
-
-This modification demonstrates how streaming data can be enriched with additional
-business information before being stored and analyzed.
-
 cd ~/kafka
 
 rm -rf /tmp/kraft-combined-logs
@@ -290,3 +262,93 @@ bin/kafka-storage.sh format --standalone \
   -c config/kraft/server.properties
 
 bin/kafka-server-start.sh config/kraft/server.properties
+
+If you see something like this in your terminal: `>>>` or `...`
+You accidentally started Python interactive mode.
+It happens.
+Press `Ctrl+c` (both keys together) or `Ctrl+Z` then `Enter` on Windows.
+
+## Technical Modification
+
+For my Phase 4 technical modification, I enhanced the Kafka consumer
+by adding a new derived field named `sowers_sales_level`.
+
+The consumer classifies transactions based on the total sale amount.
+Sales with totals greater than or equal to 100 are labeled `High`,
+while all remaining sales are labeled `Standard`.
+
+```python
+enriched["sowers_sales_level"] = (
+    "High" if enriched["total"] >= 100 else "Standard"
+)
+```
+
+I also updated the list of consumed output fields so the new column
+would be written to:
+
+```text
+data/output/consumed_sales_sowers.csv
+```
+
+### Results
+
+After running the producer and consumer, the output file successfully
+included the new `sowers_sales_level` column. Transactions with
+totals greater than or equal to 100 were categorized as `High`,
+while all other transactions were categorized as `Standard`.
+
+This modification demonstrates how streaming data can be enriched
+with additional business information before being stored and analyzed.
+
+## Phase 5: Apply the Example
+
+For Phase 5, I extended the original streaming example to create
+my own application.
+
+### Custom Consumer Enhancement
+
+I modified the Kafka consumer to add a new derived field named
+`sowers_sales_level`.
+
+Transactions with totals greater than or equal to 100 are labeled
+`High`, while all other transactions are labeled `Standard`.
+
+```python
+enriched["sowers_sales_level"] = (
+    "High" if enriched["total"] >= 100 else "Standard"
+)
+```
+
+I also updated the output field list so the new column was written
+to the consumed sales CSV file.
+
+### Notebook Analysis
+
+I created a Jupyter notebook to analyze the consumed sales data
+using pandas and matplotlib.
+
+The notebook loads the processed data from:
+
+```text
+data/output/consumed_sales_sowers.csv
+```
+
+and generates visualizations to summarize the results.
+
+### Business Insight
+
+The notebook revealed that the US-TX region generated the highest
+total revenue in the sample dataset.
+
+This project demonstrated how streaming data can be enriched with
+additional business information and transformed into useful business
+intelligence through analysis and visualization.
+
+## Visualization
+
+The chart below summarizes total revenue by region using the
+consumed Kafka sales data.
+
+![Total Revenue by Region](data/output/sales_chart_sowers.png)
+
+*Figure 1. Total revenue by region based on consumed sales data.*
