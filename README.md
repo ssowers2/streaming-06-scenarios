@@ -166,6 +166,11 @@ uv run python -m streaming.kafka_consumer_sowers
 
 ## Troubleshooting
 
+If your Kafka installation uses KRaft mode instead of the course
+legacy setup, replace `config/server.properties` with
+`config/kraft/server.properties` in the Kafka format and start
+commands.
+
 If Kafka fails to start, rebuild the cluster ID using the course
 instructions.
 
