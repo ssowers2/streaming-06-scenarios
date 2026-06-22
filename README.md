@@ -21,8 +21,73 @@ streaming-06-scenarios-sowers
 
 The consumer validates messages, computes derived values, writes
 records to CSV, stores data in DuckDB, and classifies transactions as
-either `High` or `Standard`. I created a Jupyter notebook to analyze
-the consumed data and visualize total revenue by region.
+either `High` or `Standard`.
+
+I created a Jupyter notebook to analyze the consumed data and visualize
+total revenue by region.
+
+## Technologies Used
+
+### Programming and Development
+
+- Python
+- VS Code
+- Jupyter Notebook
+
+### Streaming and Data Engineering
+
+- Apache Kafka
+- Streaming Analytics
+- Event Streaming
+- Data Engineering
+
+### Data Analysis and Visualization
+
+- Pandas
+- Matplotlib
+- Data Visualization
+- Business Intelligence
+- Real-Time Analytics
+
+### Storage and Processing
+
+- DuckDB
+- CSV Processing
+
+## Prerequisites
+
+Before running the project, ensure the following software is installed:
+
+- Python 3.12+
+- VS Code
+- uv package manager
+- Java
+- Apache Kafka
+- Git
+- Jupyter Notebook
+
+Verify installations:
+
+```bash
+python --version
+uv --version
+java --version
+```
+
+## Clone the Repository
+
+```bash
+git clone <repository-url>
+cd streaming-06-scenarios
+```
+
+## Create the Virtual Environment
+
+Install all required packages:
+
+```bash
+uv sync --extra dev --extra docs
+```
 
 ## Working Files
 
@@ -35,10 +100,21 @@ You'll work primarily with:
 - **pyproject.toml**
 - **zensical.toml**
 
+## Quick Start
+
+1. Start Kafka.
+2. Create the topic.
+3. Run the producer.
+4. Run the consumer.
+5. Open the notebook.
+6. Run all notebook cells.
+
 ## Instructions
 
 Follow the
-[⭐ **Workflow: Apply Example**](https://denisecase.github.io/pro-analytics-02/workflow-b-apply-example-project/)
+[⭐ **Workflow: Apply Example**]
+(<https://denisecase.github.io/pro-analytics-02/>
+workflow-b-apply-example-project/)
 to complete:
 
 1. Phase 1. **Start & Run**
@@ -79,8 +155,6 @@ If running Windows, specify the terminal type as **wsl** or type:
 wsl
 ```
 
-Run the commands one at a time.
-
 #### Step 1. Verify Java and PATH
 
 ```bash
@@ -89,7 +163,7 @@ echo "$JAVA_HOME"
 "$JAVA_HOME/bin/java" --version
 ```
 
-#### Step 2. Rebuild Cluster ID (as needed)
+#### Step 2. Rebuild Cluster ID (as Needed)
 
 ```bash
 cd ~/kafka
@@ -138,6 +212,19 @@ bin/kafka-topics.sh --create \
   --topic streaming-06-scenarios-sowers
 ```
 
+Verify the topic:
+
+```bash
+bin/kafka-topics.sh --list \
+  --bootstrap-server localhost:9092
+```
+
+Expected output:
+
+```text
+streaming-06-scenarios-sowers
+```
+
 ### Terminal 3: Run the Producer (`producer`)
 
 Open another VS Code terminal and rename it `producer`.
@@ -146,11 +233,11 @@ If running Windows, use **PowerShell**.
 
 Run:
 
-```shell
-uv sync --extra dev --extra docs
-
+```bash
 uv run python -m streaming.kafka_producer_sowers
 ```
+
+Messages should begin streaming to Kafka.
 
 ### Terminal 4: Run the Consumer (`consumer`)
 
@@ -160,16 +247,73 @@ If running Windows, use **PowerShell**.
 
 Run:
 
-```shell
+```bash
 uv run python -m streaming.kafka_consumer_sowers
 ```
+
+Successful execution ends with:
+
+```text
+========================
+Consumer executed successfully!
+========================
+```
+
+## Verify Outputs
+
+After the consumer finishes, verify that the following files
+have been created.
+
+### Log File
+
+```text
+project.log
+```
+
+### Processed CSV
+
+```text
+data/output/consumed_sales_sowers.csv
+```
+
+### Visualization
+
+```text
+data/output/sales_chart_sowers.png
+```
+
+### DuckDB Database
+
+```text
+data/output/*.duckdb
+```
+
+## Run the Notebook
+
+Launch Jupyter:
+
+```bash
+uv run jupyter notebook
+```
+
+Open:
+
+```text
+Notebook/sowers_sales_analysis.ipynb
+```
+
+Run all cells.
 
 ## Troubleshooting
 
 If your Kafka installation uses KRaft mode instead of the course
-legacy setup, replace `config/server.properties` with
-`config/kraft/server.properties` in the Kafka format and start
-commands.
+legacy setup, replace `config/server.properties` with:
+
+```text
+config/kraft/server.properties
+```
+
+in the Kafka format and start commands.
 
 If Kafka fails to start, rebuild the cluster ID using the course
 instructions.
@@ -225,12 +369,16 @@ additional business information before being stored and analyzed.
 
 ## Apply the Skills to a New Problem
 
-I applied the streaming analytics workflow to a new problem by creating a
-Jupyter notebook that transforms the consumed sales data into business insights.
-Using pandas and matplotlib, I summarized and visualized total revenue by region.
-This additional analysis extended the original streaming example beyond message
-production and consumption and demonstrated how streaming data can support
-decision-making.
+I applied the streaming analytics workflow to a new problem by creating
+a Jupyter notebook that transforms the consumed sales data into
+business insights.
+
+Using pandas and matplotlib, I summarized and visualized total revenue
+by region.
+
+This additional analysis extended the original streaming example beyond
+message production and consumption and demonstrated how streaming data
+can support decision-making.
 
 ### Notebook Analysis
 
@@ -245,18 +393,16 @@ regions.
 
 ### Business Insight
 
-The notebook revealed that the US-TX region generated the highest
-total revenue in the sample dataset.
+The notebook revealed that the US-TX region generated the highest total
+revenue in the sample dataset.
 
-This project demonstrated how streaming data can be transformed into
-useful business intelligence through analysis and visualization.
-
-## Visualization
+Visualization:
 
 The chart below summarizes total revenue by region using the consumed
 Kafka sales data.
 
-![Total Revenue by Region](data/output/sales_chart_sowers.png)
+![Total Revenue by Region]
+(data/output/sales_chart_sowers.png)
 
 *Figure 1. Total revenue by region based on consumed sales data.*
 
@@ -267,3 +413,13 @@ Notebook/sowers_sales_analysis.ipynb
 ```
 
 for additional analysis and insights.
+
+## Shut Down the Project
+
+Press `Ctrl+C` in the:
+
+- producer terminal
+- consumer terminal
+- kafka terminal
+
+to stop all running processes.
