@@ -54,6 +54,28 @@ total revenue by region.
 - DuckDB
 - CSV Processing
 
+## Keywords
+
+- Python
+- Apache Kafka
+- Streaming Analytics
+- Data Engineering
+- Event Streaming
+- DuckDB
+- Pandas
+- Matplotlib
+- Jupyter Notebook
+- Data Visualization
+- Business Intelligence
+- Real-Time Analytics
+- Data Transformation
+- Data Enrichment
+- Producer-Consumer Pattern
+- ETL
+- Event-Driven Architecture
+- CSV Processing
+- GitHub
+
 ## Prerequisites
 
 Before running the project, ensure the following software is installed:
